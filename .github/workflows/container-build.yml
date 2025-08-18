@@ -82,8 +82,8 @@ jobs:
             -X POST https://metric-api.newrelic.com/metric/v1 \
             --data '[{
                     "metrics":[{
-                        "name":"cicd.count",
-                        "type":"gauge",
+                        "name":"build.count",
+                        "type":"count",
                         "value":1,
                         "timestamp":INSERT_CURRENT_TIMESTAMP,
                         "attributes":{"pipeline":"bwcaApp"}

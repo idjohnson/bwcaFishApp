@@ -5,11 +5,11 @@ image:
   pullPolicy: IfNotPresent # Or Always if you want to always pull the latest image
 service:
   port: 80
-  targetPort: 8000
+  targetPort: 3000
   type: ClusterIP # Or LoadBalancer
 ingress:
   enabled: false  # To enable or disable the ingress
-  host: bskyposter.steeped.space
+  host: bwcafish.steeped.space
   tlsSecretName: bwcafishgcp-tls
   ingressClass: nginx
   certManagerIssuer: gcpleprod2 # Or "letsencrypt-prod" or similar - your clusterissuer

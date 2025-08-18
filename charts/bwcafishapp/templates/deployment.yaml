@@ -22,13 +22,13 @@ spec:
           - containerPort: {{ .Values.service.targetPort }}
           env:
             - name: VERSION
-              value: "{{ .Values.image.tag }}
-{{- if .Values.telemetry.enabled }}
+              value: "{{ .Values.image.tag }}"
+          {{- if .Values.telemetry.enabled }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "{{ .Values.telemetry.otelCollectorUrl }}"
             - name: OTEL_EXPORTER_OTLP_APIKEY
               value: "{{ .Values.telemetry.otelApiKey }}"
-{{- end }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
