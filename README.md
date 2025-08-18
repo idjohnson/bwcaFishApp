@@ -34,3 +34,44 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Terraform Deployment
+
+This project includes Terraform configuration to deploy the application to Google Cloud Run. To use it, you will need to have [Terraform](https.www.terraform.io/downloads.html) and the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) installed.
+
+1. **Authenticate with Google Cloud:**
+
+   ```bash
+   gcloud auth login
+   gcloud auth application-default login
+   ```
+
+2. **Set the project ID:**
+
+   ```bash
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+
+3. **Enable the required APIs:**
+
+   ```bash
+   gcloud services enable cloudbuild.googleapis.com
+   gcloud services enable artifactregistry.googleapis.com
+   gcloud services enable run.googleapis.com
+   ```
+
+4. **Build and push the Docker image:**
+
+   ```bash
+   gcloud builds submit --tag $(gcloud artifacts repositories describe bwcafishapp-repo --location=us-central1 --format='value(name)')/bwcafishapp:latest .
+   ```
+
+5. **Initialize and apply the Terraform configuration:**
+
+   ```bash
+   cd terraform
+   terraform init
+   terraform apply -var="project_id=YOUR_PROJECT_ID"
+   ```
+
+This will deploy the application to Cloud Run and output the URL of the service.
