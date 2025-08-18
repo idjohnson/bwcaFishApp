@@ -35,7 +35,7 @@ jobs:
           docker push $FINALBUILDLATEST
           # Push Charts
           export CVER="`cat ./charts/bwcafishapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
-          helm push ./charts/bwcafishapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
+          helm push ./charts/bwcafish-$CVER.tgz oci://harbor.freshbrewed.science/library/
         env: # Or as an environment variable
           CR_PAT: ${{ secrets.CR_PAT }}
           CR_USER: ${{ secrets.CR_USER }}
