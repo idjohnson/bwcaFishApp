@@ -1,0 +1,92 @@
+name: PR And Main Build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+
+jobs:
+  cicd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Build Dockerfile
+        run: |
+          export BUILDIMGTAG="`cat Dockerfile | tail -n1 | sed 's/^.*\///g'`"
+          docker build -t $BUILDIMGTAG .
+          docker images
+          # Package charts
+          cd charts
+          helm package fishappapp
+      - id: tagandpush
+        name: Tag and Push (Harbor)
+        run: |
+          export BUILDIMGTAG="`cat Dockerfile | tail -n1 | sed 's/^.*\///g'`"
+          export FINALBUILDTAG="`cat Dockerfile | tail -n1 | sed 's/^#//g'`"
+          export FINALBUILDLATEST="`cat Dockerfile | tail -n1 | sed 's/^#//g' | sed 's/:.*/:latest/'`"
+          docker tag $BUILDIMGTAG $FINALBUILDTAG
+          docker tag $BUILDIMGTAG $FINALBUILDLATEST
+          docker images
+          echo $CR_PAT | docker login harbor.freshbrewed.science -u $CR_USER --password-stdin
+          docker push $FINALBUILDTAG
+          # add a "latest" for others to use
+          docker push $FINALBUILDLATEST
+          # Push Charts
+          export CVER="`cat ./charts/fishappapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
+          helm push ./charts/fishappapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
+        env: # Or as an environment variable
+          CR_PAT: ${{ secrets.CR_PAT }}
+          CR_USER: ${{ secrets.CR_USER }}
+        if: github.ref == 'refs/heads/main'
+      - id: tagandpushdh
+        name: Tag and Push (Dockerhub)
+        run: |
+          export BUILDIMGTAG="`cat Dockerfile | tail -n1 | sed 's/^.*\///g'`"
+          # Note the replacement to Dockerhub
+          export FINALBUILDTAG="`cat Dockerfile | tail -n1 | sed 's/^#.*\//idjohnson\//g'`"
+          export FINALBUILDLATEST="`cat Dockerfile | tail -n1 | sed 's/^#//g' | sed 's/:.*/:latest/'`"
+          docker tag $BUILDIMGTAG $FINALBUILDTAG
+          docker tag $BUILDIMGTAG $FINALBUILDLATEST
+          docker images
+          echo $CR_PAT | docker login -u $CR_USER --password-stdin
+          docker push "$FINALBUILDTAG"
+          # add a "latest" for others to use
+          docker push $FINALBUILDLATEST
+          # Push Charts
+          export CVER="`cat ./charts/fishappapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
+          #helm push ./charts/fishappapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
+        env: # Or as an environment variable
+          CR_PAT: ${{ secrets.DH_PAT }}
+          CR_USER: ${{ secrets.DH_USER }}
+        if: github.ref == 'refs/heads/main'
+      - id: tagnpushdry
+        name: Tag and Push (DRY RUN)
+        run: |
+          export BUILDIMGTAG="`cat Dockerfile | tail -n1 | sed 's/^.*\///g'`"
+          export FINALBUILDTAG="`cat Dockerfile | tail -n1 | sed 's/^#//g'`"
+          docker tag $BUILDIMGTAG $FINALBUILDTAG
+          docker images
+          echo $CR_PAT | docker login harbor.freshbrewed.science -u $CR_USER --password-stdin
+          # SHOW THE COMMAND
+          echo "IF we were on main, we would: docker push $FINALBUILDTAG"
+        env: # Or as an environment variable
+          CR_PAT: ${{ secrets.CR_PAT }}
+          CR_USER: ${{ secrets.CR_USER }}
+        if: github.ref != 'refs/heads/main'
+      - name: Build Count
+        run: |
+            curl -vvv -k -H "Content-Type: application/json" \
+            -H "Api-Key: ${{ secrets.NEW_RELIC_API_KEY }}" \
+            -X POST https://metric-api.newrelic.com/metric/v1 \
+            --data '[{
+                    "metrics":[{
+                        "name":"cicd.count",
+                        "type":"gauge",
+                        "value":1,
+                        "timestamp":INSERT_CURRENT_TIMESTAMP,
+                        "attributes":{"pipeline":"bwcaApp"}
+                    }]
+                }]'
+      - run: echo "🍏 This job's status is $."

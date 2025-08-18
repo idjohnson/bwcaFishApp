@@ -21,3 +21,4 @@ EXPOSE 3000
 
 # Start the application
 CMD ["npm", "start"]
+#harbor.freshbrewed.science/library/bwcafish:0.1.0

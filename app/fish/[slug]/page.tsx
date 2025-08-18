@@ -3,13 +3,14 @@ import { fishData } from '../../../data/fish';
 import Link from 'next/link';
 
 type FishPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export default function FishPage({ params }: FishPageProps) {
-  const fish = fishData.find((f) => f.slug === params.slug);
+export default async function FishPage({ params }: FishPageProps) {
+  const { slug } = await params;
+  const fish = fishData.find((f) => f.slug === slug);
 
   if (!fish) {
     return (
