@@ -19,6 +19,8 @@ RUN npm run build
 # Expose the port the app runs on
 EXPOSE 3000
 
+ENV OTEL_EXPORTER_OTLP_ENDPOINT=""
+
 # Start the application
 CMD ["npm", "start"]
 #harbor.freshbrewed.science/library/bwcafish:0.1.0
