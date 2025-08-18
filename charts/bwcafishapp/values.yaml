@@ -20,6 +20,9 @@ ingress:
   sendTimeout: "3600"
   clientMaxBodySize: "0"
   proxyBodySize: "0"
+telemetry:
+  otelCollectorUrl: "https://otlp.nr-data.net:4318/v1/traces"
+  otelApiKey: "xxxxxxxxxxxxxxxxxxNRAL" # Replace with your actual API key
 resources:
   requests:
     cpu: 15m

@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY *.js ./
 
 # Install dependencies
 RUN npm ci
@@ -20,7 +21,8 @@ RUN npm run build
 EXPOSE 3000
 
 ENV OTEL_EXPORTER_OTLP_ENDPOINT=""
+ENV OTEL_EXPORTER_OTLP_APIKEY=""
 
 # Start the application
 CMD ["npm", "start"]
-#harbor.freshbrewed.science/library/bwcafish:0.1.0
+#harbor.freshbrewed.science/library/bwcafish:0.1.1

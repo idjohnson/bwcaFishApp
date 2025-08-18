@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--require ./otel-init.js' next dev",
     "build": "next build",
-    "start": "next start",
-    "startverbose": "NEXT_OTEL_VERBOSE=1 next start",
+    "start": "NODE_OPTIONS='--require ./otel-init.js' next start",
+    "startverbose": "NEXT_OTEL_VERBOSE=1 NODE_OPTIONS='--require ./otel-init.js' next start",
     "lint": "next lint"
   },
   "dependencies": {
