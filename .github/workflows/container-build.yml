@@ -19,7 +19,7 @@ jobs:
           docker images
           # Package charts
           cd charts
-          helm package fishappapp
+          helm package bwcafishapp
       - id: tagandpush
         name: Tag and Push (Harbor)
         run: |
@@ -34,8 +34,8 @@ jobs:
           # add a "latest" for others to use
           docker push $FINALBUILDLATEST
           # Push Charts
-          export CVER="`cat ./charts/fishappapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
-          helm push ./charts/fishappapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
+          export CVER="`cat ./charts/bwcafishapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
+          helm push ./charts/bwcafishapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
         env: # Or as an environment variable
           CR_PAT: ${{ secrets.CR_PAT }}
           CR_USER: ${{ secrets.CR_USER }}
@@ -55,8 +55,8 @@ jobs:
           # add a "latest" for others to use
           docker push $FINALBUILDLATEST
           # Push Charts
-          export CVER="`cat ./charts/fishappapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
-          #helm push ./charts/fishappapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
+          export CVER="`cat ./charts/bwcafishapp/Chart.yaml | grep 'version:' | sed 's/version: //' | tr -d '\n'`"
+          #helm push ./charts/bwcafishapp-$CVER.tgz oci://harbor.freshbrewed.science/library/
         env: # Or as an environment variable
           CR_PAT: ${{ secrets.DH_PAT }}
           CR_USER: ${{ secrets.DH_USER }}
