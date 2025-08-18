@@ -35,6 +35,16 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+## Helm install
+
+You can use helm to deploy.
+
+```
+$ helm install bwcafish --set ingress.enabled=true \
+   --set ingress.host=bwcafish.steeped.space --set telemetry.enabled=true \
+   --set telemetry.otelApiKey=xxxxxxxxxxxxxxxxxxNRAL charts/bwcafishapp/
+```
+
 ## Terraform Deployment
 
 This project includes Terraform configuration to deploy the application to Google Cloud Run. To use it, you will need to have [Terraform](https.www.terraform.io/downloads.html) and the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) installed.
