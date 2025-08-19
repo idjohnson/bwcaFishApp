@@ -1,10 +1,21 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { fishData } from '../data/fish';
 import { trace, context } from '@opentelemetry/api';
+import React, { useState, useEffect } from 'react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import FishPdf from './components/FishPdf';
 
 export default function Home() {
   const tracer = trace.getTracer('bwca-fish-app');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return tracer.startActiveSpan('homePage', span => {
     try {
       return (
@@ -12,6 +23,16 @@ export default function Home() {
           <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex mb-8">
             <h1 className="text-4xl font-bold text-center text-gray-800">Fish of the Boundary Waters and Quetico</h1>
           </div>
+
+          {isClient && (
+            <div className="mb-8">
+              <PDFDownloadLink document={<FishPdf />} fileName="bwca-fish.pdf">
+                {({ blob, url, loading, error }) =>
+                  loading ? 'Loading document...' : 'Download as PDF'
+                }
+              </PDFDownloadLink>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {fishData.map((fish) => (
