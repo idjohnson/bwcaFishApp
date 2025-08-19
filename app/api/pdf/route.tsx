@@ -54,6 +54,7 @@ const FishPdfDocument = () => (
         <Page size="A4" style={styles.page} key={fish.slug}>
           <View style={styles.section}>
             <Text style={styles.header}>{fish.name}</Text>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <Image style={styles.image} src={imageSrc} />
             <Text style={styles.text}>{fish.description}</Text>
 
@@ -87,5 +88,6 @@ export async function GET() {
     'Content-Disposition': 'attachment; filename="bwca-fish.pdf"',
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new NextResponse(stream as any, { headers });
 }
