@@ -21,6 +21,7 @@ ingress:
   clientMaxBodySize: "0"
   proxyBodySize: "0"
 telemetry:
+  enabled: false
   otelCollectorUrl: "https://otlp.nr-data.net:4318/v1/traces"
   otelApiKey: "xxxxxxxxxxxxxxxxxxNRAL" # Replace with your actual API key
 resources:
