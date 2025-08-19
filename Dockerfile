@@ -25,4 +25,4 @@ ENV OTEL_EXPORTER_OTLP_APIKEY=""
 
 # Start the application
 CMD ["npm", "start"]
-#harbor.freshbrewed.science/library/bwcafish:0.1.1
+#harbor.freshbrewed.science/library/bwcafish:0.1.2

@@ -1,6 +1,8 @@
+import { NextResponse } from 'next/server';
 import React from 'react';
+import { renderToStream } from '@react-pdf/renderer';
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
-import { fishData, Fish } from '../../data/fish';
+import { fishData, Fish } from '../../../data/fish';
 import fs from 'fs';
 import path from 'path';
 
@@ -21,7 +23,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width: '60%',
+    width: 300,
+    height: 300,
     margin: 'auto',
     marginBottom: 10,
   },
@@ -40,7 +43,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const FishPdf = () => (
+const FishPdfDocument = () => (
   <Document>
     {fishData.map((fish: Fish) => {
       const imagePath = path.join(process.cwd(), 'public', fish.image);
@@ -75,4 +78,14 @@ const FishPdf = () => (
   </Document>
 );
 
-export default FishPdf;
+
+export async function GET() {
+  const stream = await renderToStream(<FishPdfDocument />);
+
+  const headers = new Headers({
+    'Content-Type': 'application/pdf',
+    'Content-Disposition': 'attachment; filename="bwca-fish.pdf"',
+  });
+
+  return new NextResponse(stream as any, { headers });
+}
